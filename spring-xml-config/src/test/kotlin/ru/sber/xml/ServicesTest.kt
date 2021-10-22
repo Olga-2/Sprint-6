@@ -1,4 +1,4 @@
-package ru.sber.xml
+//package ru.sber.xml
 
 import org.junit.jupiter.api.Test
 import org.springframework.context.support.ClassPathXmlApplicationContext
@@ -9,7 +9,7 @@ class ServicesTest {
     @Test
     fun `should create context and get bean successfully`() {
         // given
-        val context = ClassPathXmlApplicationContext("applicationContext")
+        val context = ClassPathXmlApplicationContext("classpath:applicationContext.xml")
 
         // when
         val firstService = context.getBean("firstService")
@@ -21,7 +21,7 @@ class ServicesTest {
     @Test
     fun `getBean should return firstService successfully`() {
         // given
-        val context = ClassPathXmlApplicationContext("applicationContext.xml")
+        val context = ClassPathXmlApplicationContext("classpath:applicationContext.xml")
 
         // when
         val firstService = context.getBean("firstService")
@@ -33,7 +33,7 @@ class ServicesTest {
     @Test
     fun `getBean should return secondService successfully`() {
         // given
-        val context = ClassPathXmlApplicationContext("applicationContext.xml")
+        val context = ClassPathXmlApplicationContext("classpath:applicationContext.xml")
 
         // when
         val secondService = context.getBean("SecondService")
@@ -45,7 +45,7 @@ class ServicesTest {
     @Test
     fun `getBean should return thirdService successfully`() {
         // given
-        val context = ClassPathXmlApplicationContext("applicationContext.xml")
+        val context = ClassPathXmlApplicationContext("classpath:applicationContext.xml")
 
         // when
         val thirdService = context.getBean("thirdService")
