@@ -7,5 +7,6 @@ import org.springframework.stereotype.Component
 @Component
 class MyBeanFactoryPostProcessor : BeanFactoryPostProcessor {
     override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
+
     }
 }
