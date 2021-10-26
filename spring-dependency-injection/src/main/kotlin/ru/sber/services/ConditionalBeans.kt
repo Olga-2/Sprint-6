@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Condition
 import org.springframework.context.annotation.ConditionContext
 import org.springframework.context.annotation.Conditional
+import org.springframework.context.annotation.Profile
 import org.springframework.core.type.AnnotatedTypeMetadata
 import org.springframework.stereotype.Component
 
@@ -16,7 +17,6 @@ class ProdProfileCondition : Condition {
 interface ConditionalInterface
 
 @Component
-@Conditional(ProdProfileCondition::class)
 class ConditionalService : ConditionalInterface {
     override fun toString(): String {
         return "ConditionalService"
@@ -24,6 +24,7 @@ class ConditionalService : ConditionalInterface {
 }
 
 @Component
+@Conditional(ProdProfileCondition::class)
 class AnotherConditionalService : ConditionalInterface {
     override fun toString(): String {
         return "AnotherConditionalService"
