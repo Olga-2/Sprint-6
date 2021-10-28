@@ -1,5 +1,7 @@
 import ru.sber.filesystem.VFilesystem
+import ru.sber.filesystem.VPath
 import java.io.IOException
+import java.io.PrintWriter
 import java.net.ServerSocket
 
 /**
@@ -28,43 +30,38 @@ class FileServer {
          */
         while (true) {
 
-            // TODO Delete this once you start working on your solution.
-            //throw new UnsupportedOperationException();
 
-            // TODO 1) Use socket.accept to get a Socket object
+            val conn = socket.accept()
 
-
-            /*
-            * TODO 2) Using Socket.getInputStream(), parse the received HTTP
-            * packet. In particular, we are interested in confirming this
-            * message is a GET and parsing out the path to the file we are
-            * GETing. Recall that for GET HTTP packets, the first line of the
-            * received packet will look something like:
-            *
-            *     GET /path/to/file HTTP/1.1
-            */
-
-
-            /*
-             * TODO 3) Using the parsed path to the target file, construct an
-             * HTTP reply and write it to Socket.getOutputStream(). If the file
-             * exists, the HTTP reply should be formatted as follows:
-             *
-             *   HTTP/1.0 200 OK\r\n
-             *   Server: FileServer\r\n
-             *   \r\n
-             *   FILE CONTENTS HERE\r\n
-             *
-             * If the specified file does not exist, you should return a reply
-             * with an error code 404 Not Found. This reply should be formatted
-             * as:
-             *
-             *   HTTP/1.0 404 Not Found\r\n
-             *   Server: FileServer\r\n
-             *   \r\n
-             *
-             * Don't forget to close the output stream.
-             */
+            conn.use { s ->
+                val reader = s.getInputStream().bufferedReader()
+                val clientRequest = reader.readLine()
+                var file: String? = ""
+                if (!clientRequest.startsWith("GET"))
+                    getErrorPage()
+                else {
+                    val splitRequest = clientRequest.split(" ")
+                    if (splitRequest.size < 2)
+                        getErrorPage()
+                    else {
+                        file = fs.readFile(VPath(splitRequest[1]))
+                    }
+                }
+                // отправляем ответ
+                val writer = PrintWriter(s.getOutputStream())
+                val serverResponse = if (file != null) getSuccessPage(file) else getErrorPage()
+                writer.println(serverResponse)
+                writer.flush()
+            }
+            conn.close()
         }
+    }
+
+    private fun getSuccessPage(file: String): String {
+      return  "HTTP/1.0 200 OK\r\n Server: FileServer\r\n\r\n$file"
+    }
+
+    private fun getErrorPage(): String {
+        return "HTTP/1.0 404 Not Found\\r\\n Server: FileServer\\r\\n\\r\\n"
     }
 }
