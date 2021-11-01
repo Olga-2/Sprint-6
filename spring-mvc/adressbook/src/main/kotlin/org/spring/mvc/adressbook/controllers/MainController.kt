@@ -79,7 +79,7 @@ class MainController {
             && addr != null && addr.length > 0)
          {
             addresses.add(Address(fio, addr))
-            return "redirect:/app/list"
+            return "redirect:/app/list?fullName"
         }
         model.addAttribute("errorMessage", errorMessage);
         return "addAddress";
