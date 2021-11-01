@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Address</title>
+</head>
+<body>
+        <div>
+          <h3>  <a th:href="@{/app/list}">Address List</a> </h3>
+            <br>
+
+            <form th:action="@{/app/__${id}__/edit}" method="POST"
+                  th:object="${Address}">
+                Name:
+                <input type="text" th:field="${address.fullName}" />
+                <br/>
+                Address:
+                <input type="text" th:field="${address.address}" />
+                <br/>
+                <input type="submit" value="Edit" />
+            </form>
+
+        </div>
+</body>
+</html>

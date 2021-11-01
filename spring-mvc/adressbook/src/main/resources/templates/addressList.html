@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Adresses</title>
+</head>
+<body>
+    <h1>List of address</h1>
+    <h3><a th:href="@{/app/add}">Add address</a> </h3><br>
+
+    <div>
+            <table border="1">
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                </tr>
+                <tr th:each ="address : ${addresses}">
+                    <td th:utext="${address.fullName}">...</td>
+                    <td th:utext="${address.address}">...</td>
+                </tr>
+            </table>
+        <form th:action="@{/app/list}"  method="POST">
+             <input type="text"  name="fullName" th:value="${fullName}" />
+            <h4>     <input type="submit" value="Find" /></h4>
+
+        </form>
+    </div>
+</body>
+</html>

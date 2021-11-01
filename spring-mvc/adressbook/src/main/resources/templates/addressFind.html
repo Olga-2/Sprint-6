@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Address</title>
+</head>
+<body>
+    <div>
+
+        <form
+                th:object="${Address}">
+            <table border="1">
+                <tr> <td>Name</td> <td th:utext="${address.fullName}"/>  </tr>
+                <br>
+                <tr> <td>Address</td><td th:utext="${address.address}"/> </tr>
+            </table>
+            <h4>     <input th:formaction="@{/app/__${id}__/delete}" formmethod="POST" type="submit" value="Delete" /></h4>
+            <h4>     <input th:formaction="@{/app/__${id}__/edit}" formmethod="POST" type="submit" value="Edit" /></h4>
+            <h4>    <input th:formaction="@{/app/__${id}__/view}" formmethod="GET" type="submit" value="View" />
+          </h4>
+
+        </form>
+    </div>
+
+</body>
+</html>
