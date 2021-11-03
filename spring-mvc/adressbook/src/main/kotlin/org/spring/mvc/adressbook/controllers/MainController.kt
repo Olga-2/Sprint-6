@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
-@Controller("/app")
+@Controller
+@RequestMapping(value = ["/app"])
 class MainController {
 
     val allRequestLog = ConcurrentHashMap<LocalDateTime, RequestLog>()
@@ -52,7 +53,7 @@ class MainController {
         return "authView"
     }
 
-    @RequestMapping(value = ["/app/list"], method = [RequestMethod.GET, RequestMethod.POST])
+    @RequestMapping(value = ["/list"], method = [RequestMethod.GET, RequestMethod.POST])
     fun getAddressList(model: Model, @RequestParam fullName : String, request: HttpServletRequest): String {
         if (!accept(request))  return "authView"
 
@@ -65,7 +66,7 @@ class MainController {
         return "addressList"
     }
 
-    @RequestMapping(value = ["/app/add"], method = [RequestMethod.POST, RequestMethod.GET])
+    @RequestMapping(value = ["/add"], method = [RequestMethod.POST, RequestMethod.GET])
     fun addAddress(
         model: Model,
         @ModelAttribute("Address") address: Address,
@@ -85,32 +86,32 @@ class MainController {
         return "addAddress";
     }
 
-    @GetMapping(value = ["/app/{id}/view"])
+    @GetMapping(value = ["/{id}/view"])
     fun getAddress(model: Model, request: HttpServletRequest, @PathVariable id: Int): String {
         if (!accept(request))  return "authView"
-        if (!(id in addresses.indices)) return "errorPage"
+        if (id !in addresses.indices) return "errorPage"
         val address = addresses[id]
         model.addAttribute("address", address)
         return "addressView"
 
     }
 
-    @RequestMapping(value = ["/app/{id}/delete"], method = [RequestMethod.POST])
+    @RequestMapping(value = ["/{id}/delete"], method = [RequestMethod.POST])
     fun deleteAddress(model: Model, request: HttpServletRequest, @PathVariable id: Int): String {
         if (!accept(request))  return "authView"
-        if (!(id in addresses.indices)) return "errorPage"
+        if (id !in addresses.indices) return "errorPage"
         addresses.removeAt(id)
         model.addAttribute("addresses", addresses)
 
         return "redirect:/app/list?fullName"
     }
 
-    @RequestMapping(value = ["/app/{id}/edit"], method = [RequestMethod.POST, RequestMethod.GET])
+    @RequestMapping(value = ["/{id}/edit"], method = [RequestMethod.POST, RequestMethod.GET])
     fun editAddress(model: Model, request: HttpServletRequest,
                     @ModelAttribute("Address") address: Address,
                     @PathVariable id: Int): String {
         if (!accept(request))  return "authView"
-        if (!(id in addresses.indices)) return "errorPage"
+        if (id !in addresses.indices) return "errorPage"
 
         if (address.fullName == null && address.address == null ) {
             model.addAttribute("address",  addresses[id])
@@ -126,12 +127,12 @@ class MainController {
         return "redirect:/app/list?fullName"
     }
 
-    @RequestMapping(value = ["/app/list/{fio}"],  method = [RequestMethod.GET])
+    @RequestMapping(value = ["/list/{fio}"],  method = [RequestMethod.GET])
     fun findAddress(model: Model, request: HttpServletRequest, @PathVariable fio: String): String {
         if (!accept(request))  return "authView"
         val address = addresses.find { it.fullName.equals(fio, true)}
         val id = if (address == null)  -1 else addresses.indexOf(address)
-        if (!(id in addresses.indices)) return "errorPage"
+        if (id !in addresses.indices) return "errorPage"
         model.addAttribute("address", address)
         model.addAttribute("id", id)
         return "addressFind"
