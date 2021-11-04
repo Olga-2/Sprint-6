@@ -2,6 +2,7 @@ package org.spring.mvc.adressbook
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.MatcherAssert.*
 import org.junit.jupiter.api.Test
 import org.spring.mvc.adressbook.models.Address
 import org.spring.mvc.adressbook.models.User
@@ -9,15 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.test.web.client.getForObject
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.http.MediaType
-
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.*
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-import javax.xml.ws.Response
+import org.springframework.web.client.ResponseExtractor
+import javax.servlet.http.Cookie
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -132,6 +139,64 @@ class AdressbookApplicationTests {
 		}
 	}
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class RestApplicationTest{
 
+	@LocalServerPort
+	private var port: Int = 0
+
+	@Autowired
+	private lateinit var restTemplate: TestRestTemplate
+
+	private fun url(s: String): String{
+		return "http://localhost:${port}/${s}"
+	}
+
+	@Test
+	fun getLogin() {
+		val resp = restTemplate.postForEntity(
+			url("/api/login"),
+			HttpEntity<Any>(User("Bob", "Bob123")), User::class.java
+		)
+		assertEquals(HttpStatus.OK, resp.statusCode)
+		assertThat(resp.headers.get("Set-Cookie").toString(), containsString("auth"))
+	}
+
+	@Test
+	fun getList() {
+
+		var resp = restTemplate.postForEntity(
+			url("/api/login"),
+			HttpEntity<Any>(User("Bob", "Bob123")), User::class.java)
+
+		val headers = HttpHeaders()
+		headers.add("Cookie", resp.headers.getFirst("Set-Cookie"))
+		class ListOfAddress : ParameterizedTypeReference<List<Address>>(){}
+
+		val resp1 = restTemplate.exchange(url("/api/list"), HttpMethod.GET,
+			HttpEntity<String>(headers), ListOfAddress())
+		assertNotNull(resp1)
+		assertEquals(200, resp1.statusCodeValue)
+		assertTrue( resp1.body!!.size == 4 )
+	}
+	@Test
+	fun getViewId() {
+
+		var resp = restTemplate.postForEntity(
+			url("/api/login"),
+			HttpEntity<Any>(User("Bob", "Bob123")), User::class.java)
+
+		val headers = HttpHeaders()
+		headers.add("Cookie", resp.headers.getFirst("Set-Cookie"))
+		class ListOfAddress : ParameterizedTypeReference<List<Address>>(){}
+
+		val resp1 = restTemplate.exchange(url("/api/1/view"), HttpMethod.GET,
+			HttpEntity<String>(headers), Address::class.java)
+		assertNotNull(resp1)
+		assertEquals(200, resp1.statusCodeValue)
+		assertEquals( "Petrov Ivan", resp1.body!!.fullName )
+		assertEquals( "Nikitina,  14", resp1.body!!.address )
+	}
+}
 
 
