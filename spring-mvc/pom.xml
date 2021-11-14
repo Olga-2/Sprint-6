@@ -77,7 +77,12 @@
 
 	<build>
 		<sourceDirectory>${project.basedir}/addressbook/src/main/kotlin</sourceDirectory>
-		<testSourceDirectory>${project.basedir}/addressbook/src/test/kotlin</testSourceDirectory>
+		<testSourceDirectory>${project.basedir}/addressbook/src/test</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>${project.basedir}/addressbook/src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
