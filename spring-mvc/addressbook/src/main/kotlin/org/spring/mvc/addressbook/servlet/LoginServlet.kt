@@ -3,6 +3,7 @@ package org.spring.mvc.addressbook.servlet
 import org.springframework.boot.web.servlet.ServletRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpStatus
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -12,6 +13,7 @@ class LoginServlet: HttpServlet() {
 
     override fun doGet(request: HttpServletRequest, response: HttpServletResponse) {
         response.contentType = "text/html"
+        response.status = 200
         val text ="<!DOCTYPE html>\n" +
                 "<html lang=\"en\"\n" +
                 "<head>\n" +
@@ -39,6 +41,8 @@ class LoginServlet: HttpServlet() {
 
 
     override fun doPost(request: HttpServletRequest, response: HttpServletResponse) {
+        response.contentType = "text/html"
+        response.status = 200
         val text ="<html>\n" +
                 "   <head>\n" +
                 "   <title>Take chose</title>\n" +

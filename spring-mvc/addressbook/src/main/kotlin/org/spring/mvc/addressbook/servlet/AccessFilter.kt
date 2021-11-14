@@ -26,7 +26,6 @@ class  AccessFilter(@Autowired initialData: InitialData): HttpFilter() {
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
 
         val resp = (response as HttpServletResponse)
-        resp.contentType = "text/html"
 
         if ("/login".equals((request as HttpServletRequest).requestURI)) {
             if ("POST".equals(request.method)) {
